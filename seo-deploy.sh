@@ -302,10 +302,32 @@ sudo apt-get -y install wget
 wget https://builds.matomo.org/$GitSEOversion.zip && unzip $GitSEOversion.zip
 
 cd matomo-latest
+
 #Retrieve a list of each branch available 
 #sudo git branch -a
 #Tell git which branch to track or use
 #sudo git branch --track $GitSEOversion origin/$GitSEOversion
+
+# Checkout matomo.js in case it was changed
+#git checkout -- matomo.js
+
+# Pull the latest code from Matomo repositories
+#php console git:pull
+
+# Upgrade the libraries in case there is any to be upgraded
+#php composer.phar self-update > /dev/null
+#php composer.phar install --no-dev > /dev/null
+
+# Run the upgrade in case there was one
+#php console core:update --yes > /dev/null
+
+# Re-generate the matomo.js 
+#php console custom-matomo-js:update > /dev/null
+
+#git checkout 3.0.0
+#git submodule update --init --recursive
+#php composer.phar install --no-dev
+
 
 #if get error
 git fetch
@@ -318,6 +340,7 @@ sudo mkdir /var/www/html/$FOLDERDATA
 sudo chown -R www-data:www-data /var/www/html/$FQDN/ 
 sudo chmod -R 755 /var/www/html/$FQDN/ 
 sudo chown www-data /var/www/html/$FOLDERDATA
+chmod a+w /var/www/html/$FQDN/config
 
 #Step 7: Finish SEO installation
 cat > /etc/hosts <<END
@@ -330,24 +353,6 @@ ff00::0 ip6-mcastprefix
 ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 END
-
-#Visit your server IP or hostname URL on /SEO. If it is your local machine, you can use: http://127.0.0.1/SEO/install/install.php
-#On the first page, Select your language.
-#Accept License terms and click “Continue“.
-#Choose ‘Install‘ for a completely new installation of SEO.
-#Confirm that the Checks for the compatibility of your environment with the execution of SEO is successful.
-#Configure Database connection
-#Select SEO database to initialize.
-#Finish the other setup steps to start using SEO.
-#You should get the login page.
-#Default logins / passwords are:
-#    SEO/SEO for the administrator account
-#    tech/tech for the technician account
-#    normal/normal for the normal account
-#    post-only/postonly for the postonly account
-# On first login, you’re asked to change the password. Please set new password before configuring SEO. This is done under Administration > Users.
-# This marks the end of installing SEO on Ubuntu 20.04/18.04. The next sections are about adding assets and other IT Management stuff for your 
-# infrastructure/environment. For this, please refer to the 
 
 #Step 8. Configure NGINX
 
@@ -428,4 +433,27 @@ sudo certbot --nginx -d $FQDN
 #   version of this certificate in the future, simply run certbot again
 #   with the "certonly" option. To non-interactively renew *all* of
 #   your certificates, run "certbot renew"
+
+
+#Visit your server IP or hostname URL on /SEO. If it is your local machine, you can use: http://127.0.0.1/
+#The 5-minute Matomo Installation
+#Open your web browser and navigate to the URL to which you uploaded Matomo. 
+#If everything is uploaded correctly, you should see the Matomo Installation Welcome Screen
+#On the first page, Select your language.
+#Accept License terms and click “Continue“.
+#Choose ‘Install‘ for a completely new installation of SEO.
+#Confirm that the Checks for the compatibility of your environment with the execution of SEO is successful.
+#Configure Database connection
+#Select SEO database to initialize.
+#Finish the other setup steps to start using SEO.
+#You should get the login page.
+#Default logins / passwords are:
+#    SEO/SEO for the administrator account
+#    tech/tech for the technician account
+#    normal/normal for the normal account
+#    post-only/postonly for the postonly account
+# On first login, you’re asked to change the password. Please set new password before configuring SEO. This is done under Administration > Users.
+# This marks the end of installing SEO on Ubuntu 20.04/18.04. The next sections are about adding assets and other IT Management stuff for your 
+# infrastructure/environment. For this, please refer to the 
+
 fi
