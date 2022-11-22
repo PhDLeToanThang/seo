@@ -301,7 +301,7 @@ sudo apt-get -y install wget
 #Download the SEO Code and Unzip 
 wget https://builds.matomo.org/$GitSEOversion.zip && unzip $GitSEOversion.zip
 
-cd matomo-latest
+cd matomo
 
 #Retrieve a list of each branch available 
 #sudo git branch -a
@@ -334,7 +334,7 @@ git fetch
 #Finally, Check out the SEO version specified 
 sudo git checkout $GitSEOversion
 #Run the following command to extract package to NGINX website root folder.
-sudo cp -R /opt/matomo-latest /var/www/html/$FQDN
+sudo cp -R /opt/matomo /var/www/html/$FQDN
 sudo mkdir /var/www/html/$FOLDERDATA
 #Change the folder permissions.
 sudo chown -R www-data:www-data /var/www/html/$FQDN/ 
@@ -454,6 +454,5 @@ sudo certbot --nginx -d $FQDN
 #    post-only/postonly for the postonly account
 # On first login, you’re asked to change the password. Please set new password before configuring SEO. This is done under Administration > Users.
 # This marks the end of installing SEO on Ubuntu 20.04/18.04. The next sections are about adding assets and other IT Management stuff for your 
-# infrastructure/environment. For this, please refer to the 
-
+# infrastructure/environment. For this, please refer to the SEO
 fi
