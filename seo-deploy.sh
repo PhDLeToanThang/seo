@@ -1,3 +1,4 @@
+#Code UNIX:
 # D:\Documents\GitHub\seo\seo-deploy.sh
 # Code Deploy SEO server On-premise:
 # Install SEO on Ubuntu 20.04 linux server OS:
@@ -13,24 +14,24 @@ sudo apt -y upgrade
 clear
 cd ~
 ############### Tham số cần thay đổi ở đây ###################
-echo "FQDN: e.g: demo.company.vn"   # Đổi địa chỉ web thứ nhất Website Master for Resource code - để tạo cùng 1 Source code duy nhất 
+echo "FQDN: e.g: seo.company.vn"   # Đổi địa chỉ web thứ nhất Website Master for Resource code - để tạo cùng 1 Source code duy nhất 
 read -e FQDN
-echo "dbname: e.g: itildata"   # Tên DBNane
+echo "dbname: e.g: seodata"   # Tên DBNane
 read -e dbname
-echo "dbuser: e.g: userdata"   # Tên User access DB lmsatcuser
+echo "dbuser: e.g: userseodata"   # Tên User access DB lmsatcuser
 read -e dbuser
 echo "Database Password: e.g: P@$$w0rd-1.22"
 read -s dbpass
-echo "phpmyadmin folder name: e.g: phpmyadmin"   # Đổi tên thư mục phpmyadmin khi add link symbol vào Website 
+echo "phpmyadmin folder name: e.g: seodbadmin"   # Đổi tên thư mục phpmyadmin khi add link symbol vào Website 
 read -e phpmyadmin
-echo "ITIL Folder Data: e.g: itildata"   # Tên Thư mục chưa Data vs Cache
+echo "SEO Folder Data: e.g: seodata"   # Tên Thư mục chưa Data vs Cache
 read -e FOLDERDATA
 echo "dbtype name: e.g: mariadb"   # Tên kiểu Database
 read -e dbtype
 echo "dbhost name: e.g: localhost"   # Tên Db host connector
 read -e dbhost
 
-GitGLPIversion="10.0.5"
+GitSEOversion="matomo-latest"
 
 echo "run install? (y/n)"
 read -e run
@@ -266,8 +267,8 @@ END
 
 systemctl restart php8.0-fpm.service
 
-#Step 4. Create ITIL Database
-#Log into MySQL and create database for ITIL.
+#Step 4. Create SEO Database
+#Log into MySQL and create database for SEO.
 #!/bin/bash
 mysql -uroot -prootpassword -e "CREATE DATABASE $dbname CHARACTER SET utf8 COLLATE utf8_unicode_ci";
 mysql -uroot -prootpassword -e "CREATE USER '$dbuser'@'$dbhost' IDENTIFIED BY '$dbpass'";
@@ -290,39 +291,35 @@ mysql -uroot -prootpassword -e "SHOW DATABASES";
 #Save the file then restart the MariaDB service to apply the changes.
 systemctl restart mariadb
 
-#Step 6. Download & Install ITIL
-#We will be using Git to install/update the ITIL Core Application 
+#Step 6. Download & Install SEO
+#We will be using Git to install/update the SEO Core Application 
 sudo apt install git
 
 cd /opt
 sudo apt-get -y install wget
-#Run the following command to download ITIL package.
-#Download the ITIL Code and Index 
-wget https://github.com/glpi-project/glpi/releases/download/$GitGLPIversion/glpi-$GitGLPIversion.tgz
-#sudo git ITIL clone https://github.com/glpi-project/glpi/releases/download/$GitGLPIversion/glpi-$GitGLPIversion.tgz
-#Change directory into the downloaded ITIL folder
-#Uncompress the downloaded the archive:
-tar xvf glpi-$GitGLPIversion.tgz
+#Run the following command to download SEO package.
+#Download the SEO Code and Unzip 
+wget https://builds.matomo.org/$GitSEOversion.zip && unzip $GitSEOversion.zip
 
-cd glpi
+cd matomo-latest
 #Retrieve a list of each branch available 
 #sudo git branch -a
 #Tell git which branch to track or use
-#sudo git branch --track $GitGLPIversion origin/$GitGLPIversion
+#sudo git branch --track $GitSEOversion origin/$GitSEOversion
 
 #if get error
 git fetch
-#Finally, Check out the ITIL version specified 
-sudo git checkout $GitGLPIversion
+#Finally, Check out the SEO version specified 
+sudo git checkout $GitSEOversion
 #Run the following command to extract package to NGINX website root folder.
-sudo cp -R /opt/glpi /var/www/html/$FQDN
+sudo cp -R /opt/matomo-latest /var/www/html/$FQDN
 sudo mkdir /var/www/html/$FOLDERDATA
 #Change the folder permissions.
 sudo chown -R www-data:www-data /var/www/html/$FQDN/ 
 sudo chmod -R 755 /var/www/html/$FQDN/ 
 sudo chown www-data /var/www/html/$FOLDERDATA
 
-#Step 7: Finish GLPI installation
+#Step 7: Finish SEO installation
 cat > /etc/hosts <<END
 127.0.0.1 $FQDN
 127.0.0.1 localhost
@@ -334,27 +331,27 @@ ff02::1 ip6-allnodes
 ff02::2 ip6-allrouters
 END
 
-#Visit your server IP or hostname URL on /glpi. If it is your local machine, you can use: http://127.0.0.1/glpi/install/install.php
+#Visit your server IP or hostname URL on /SEO. If it is your local machine, you can use: http://127.0.0.1/SEO/install/install.php
 #On the first page, Select your language.
 #Accept License terms and click “Continue“.
-#Choose ‘Install‘ for a completely new installation of GLPI.
-#Confirm that the Checks for the compatibility of your environment with the execution of GLPI is successful.
+#Choose ‘Install‘ for a completely new installation of SEO.
+#Confirm that the Checks for the compatibility of your environment with the execution of SEO is successful.
 #Configure Database connection
-#Select glpi database to initialize.
-#Finish the other setup steps to start using GLPI.
+#Select SEO database to initialize.
+#Finish the other setup steps to start using SEO.
 #You should get the login page.
 #Default logins / passwords are:
-#    glpi/glpi for the administrator account
+#    SEO/SEO for the administrator account
 #    tech/tech for the technician account
 #    normal/normal for the normal account
 #    post-only/postonly for the postonly account
-# On first login, you’re asked to change the password. Please set new password before configuring GLPI. This is done under Administration > Users.
-# This marks the end of installing GLPI on Ubuntu 20.04/18.04. The next sections are about adding assets and other IT Management stuff for your 
+# On first login, you’re asked to change the password. Please set new password before configuring SEO. This is done under Administration > Users.
+# This marks the end of installing SEO on Ubuntu 20.04/18.04. The next sections are about adding assets and other IT Management stuff for your 
 # infrastructure/environment. For this, please refer to the 
 
 #Step 8. Configure NGINX
 
-#Next, you will need to create an Nginx virtual host configuration file to host ITIL:
+#Next, you will need to create an Nginx virtual host configuration file to host SEO:
 #$ nano /etc/nginx/conf.d/$FQDN.conf
 echo 'server {'  >> /etc/nginx/conf.d/$FQDN.conf
 echo '    root '/var/www/html/${FQDN}';'>> /etc/nginx/conf.d/$FQDN.conf
