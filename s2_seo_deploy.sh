@@ -6,10 +6,10 @@
 #This is source code deploy for Multi-tenance for more instance SEO.
 
 #Step 1: Update Ubuntu
-sudo apt update
+sudo apt update -y
 
 #You can also upgrade installed packages by running the following command.
-sudo apt -y upgrade
+sudo apt upgrade -y
 
 clear
 cd ~
@@ -72,7 +72,7 @@ sudo mysql_secure_installation
 #Step 3. Install PHP-FPM & Related modules
 sudo apt-get install software-properties-common
 sudo add-apt-repository ppa:ondrej/php
-sudo apt update
+sudo apt update -y
 sudo apt install php8.0-fpm php8.0-common php8.0-mbstring php8.0-xmlrpc php8.0-soap php8.0-gd php8.0-xml php8.0-intl php8.0-mysql php8.0-cli php8.0-mcrypt php8.0-ldap php8.0-zip php8.0-curl php8.0-bz2
 
 #Open PHP-FPM config file.
@@ -293,10 +293,10 @@ systemctl restart mariadb
 
 #Step 6. Download & Install SEO
 #We will be using Git to install/update the SEO Core Application 
-sudo apt install git
+sudo apt install git -y
 
 cd /opt
-sudo apt-get -y install wget
+sudo apt-get install wget -y
 #Run the following command to download SEO package.
 #Download the SEO Code and Unzip 
 wget https://builds.matomo.org/$GitSEOversion.zip && unzip $GitSEOversion.zip
@@ -386,8 +386,8 @@ echo '}'>> /etc/nginx/conf.d/$FQDN.conf
 nginx -t
 
 #Step 9. Setup and Configure PhpMyAdmin
-sudo apt update
-sudo apt install phpmyadmin
+sudo apt update -y
+sudo apt install phpmyadmin -y
 
 #Step 10. gỡ bỏ apache:
 sudo service apache2 stop
@@ -421,7 +421,7 @@ sudo systemctl restart nginx
 systemctl restart php8.0-fpm.service
 
 #Step 12. Install Certbot
-sudo apt install certbot python3-certbot-nginx
+sudo apt install certbot python3-certbot-nginx -y
 sudo certbot --nginx -d $FQDN
 
 # You should test your configuration at:
