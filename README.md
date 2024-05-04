@@ -18,4 +18,4 @@ This is source code deploy for Multi-tenance for more instance SEO.
 
 ## Deploy SEO server web:
 
-wget https://raw.githubusercontent.com/PhDLeToanThang/seo/master/seo-deploy.sh && bash seo-deploy.sh
+wget https://raw.githubusercontent.com/PhDLeToanThang/seo/master/s2_seo_deploy.sh && bash s2_seo_deploy.sh
