@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 clear
 sudo apt update -y
 sudo apt list --upgradable
@@ -26,15 +26,14 @@ systemctl is-active xrdp
 #active
 sudo systemctl enable xrdp # start xrdp on system start
 
-#Firewall configuration:   
-sudo ufw allow 3389
 
-# (dải ipv4 cho guacamole Server tới VM cần điều khiển) 
-sudo ufw allow from 192.168.100.0/24 to any port 3389   
+# (dải ipv4 cho guacamole Server tới con VM cần điều khiển) 
+#sudo ufw allow from 192.168.100.0/24 to any port 3389   
 
 #Reboot system:  (không cần thiết)
 #sudo reboot
 
+sudo apt install wget -y
 sudo apt install ufw -y
 sudo apt install net-tools -y
 sudo apt install gparted -y
@@ -42,15 +41,28 @@ sudo apt install ifupdown -y
 
 # After you already have Cockpit on your server, point your web browser to: https://ip-address-of-machine:9090
 sudo apt install ubuntu-desktop -y
-sudo apt remove libreoffice-* -y
 
 sudo apt-get install openvswitch-switch -y
 sudo systemctl start openvswitch-switch
 systemctl restart systemd-networkd
 
-#Firewall configuration:
-sudo ufw allow 3389
-sudo ufw allow ssh
+#Firewall configuration:   
+sudo ufw allow 3389/tcp
+sudo ufw allow ssh/tcp
 
 #sudo ufw enable 
-sudo reboot
+#Cài đặt gói phần mềm để sử dụng gói apt qua giao thức HTTPS
+sudo apt install apt-transport-https ca-certificates curl software-properties-common -y
+
+#Thêm kho lưu trữ Docker GPG key
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+
+#Thêm kho lưu trữ Docker vào danh sách nguồn
+echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+#Cập nhật lại danh sách gói phần mềm và cài đặt Docker:
+sudo apt update -y
+sudo apt install docker-ce docker-ce-cli containerd.io -y
+# Sau khi cài đặt, Docker sẽ tự động khởi động. 
+# Bạn có thể thêm người dùng hiện tại vào nhóm docker để có quyền sử dụng Docker mà không cần sử dụng lệnh sudo
+sudo usermod -aG docker $USER
