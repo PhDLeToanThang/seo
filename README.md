@@ -1,4 +1,4 @@
-# S.E.O from mamoto 5.0.3
+# S.E.O from mamoto 5.1.1
 
 ```seo
 D:\Documents\GitHub\seo\seo-deploy.sh
