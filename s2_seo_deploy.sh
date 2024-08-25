@@ -94,7 +94,7 @@ sudo apt-get install software-properties-common -y
 sudo -S add-apt-repository ppa:ondrej/php -y
 sudo apt update -y
 sudo apt install php8.3-fpm php8.3-common php8.3-mbstring php8.3-xmlrpc php8.3-soap php8.3-gd php8.3-xml php8.3-intl php8.3-mysql php8.3-cli php8.3-mcrypt php8.3-ldap php8.3-zip php8.3-curl -y
-
+http://seo.cloud.edu.vn/
 #Open PHP-FPM config file.
 
 #sudo nano /etc/php/8.3/fpm/php.ini
@@ -191,6 +191,10 @@ sudo chmod -R 755 /var/www/html/$FQDN/
 sudo chown www-data /var/www/html/$FOLDERDATA
 chmod a+w /var/www/html/$FQDN/config
 
+#https://matomo.org/faq/how-to/find-and-edit-matomo-config-file/
+# make /var/www/html/$FQDN/config/config.ini.php
+
+
 #Step 7: Finish SEO installation
 cat > /etc/hosts <<END
 127.0.0.1 $FQDN
@@ -222,7 +226,7 @@ echo '      alias '/var/www/html/$FOLDERDATA/';'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    location ~ [^/].php(/|$) {'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        include snippets/fastcgi-php.conf;'>> /etc/nginx/conf.d/$FQDN.conf
-echo '        fastcgi_pass unix:/run/php/php8.0-fpm.sock;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '        fastcgi_pass unix:/run/php/php8.3-fpm.sock;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        include fastcgi_params;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
