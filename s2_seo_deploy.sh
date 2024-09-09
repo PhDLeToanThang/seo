@@ -94,7 +94,7 @@ sudo apt-get install software-properties-common -y
 sudo -S add-apt-repository ppa:ondrej/php -y
 sudo apt update -y
 sudo apt install php8.3-fpm php8.3-common php8.3-mbstring php8.3-xmlrpc php8.3-soap php8.3-gd php8.3-xml php8.3-intl php8.3-mysql php8.3-cli php8.3-mcrypt php8.3-ldap php8.3-zip php8.3-curl -y
-http://seo.cloud.edu.vn/
+
 #Open PHP-FPM config file.
 
 #sudo nano /etc/php/8.3/fpm/php.ini
@@ -135,7 +135,10 @@ cat > /etc/mysql/mariadb.conf.d/50-server.cnf <<END
 innodb_file_format = Barracuda
 innodb_file_per_table = 1
 innodb_large_prefix = ON
+max_allowed_packet=128M
 END
+# sudo mysqld --max_allowed_packet=128M
+# https://dev.mysql.com/doc/refman/8.4/en/packet-too-large.html
 
 #Save the file then restart the MariaDB service to apply the changes.
 systemctl restart mariadb
@@ -193,7 +196,13 @@ chmod a+w /var/www/html/$FQDN/config
 
 #https://matomo.org/faq/how-to/find-and-edit-matomo-config-file/
 # make /var/www/html/$FQDN/config/config.ini.php
-
+# We recommend using Matomo over secure SSL connections only. 
+# To prevent insecure access over http, 
+# add force_ssl = 1 to the General section in your Matomo config/config.ini.php file.
+# Your database version indicates you might be using a MariaDb server. 
+# If this is the case, please ensure to set [database] schema = Mariadb in the "config/config.ini.php" file, to ensure all database feature work as expected.
+# Max Packet Size	It is recommended to configure a 'max_allowed_packet' size in your MySQL database of at least 64MB. 
+# Configured is currently 16MB.
 
 #Step 7: Finish SEO installation
 cat > /etc/hosts <<END
@@ -220,12 +229,47 @@ echo '    autoindex off;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    location / {'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        try_files $uri $uri/ =404;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    ## disable all access to the following directories'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    ## deny access to all other .php files'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~* ^.+\.php$ {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    deny all;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    return 403;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~ ^/(.git|config|tmp|core|lang) {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '        deny all;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '        return 403; # replace with 404 to not show these directories exist'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~ /\.ht {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '        deny  all;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    return 403;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~ js/container_.*_preview\.js$ {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    expires off;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    add_header Cache-Control 'private, no-cache, no-store';'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~ \.(gif|ico|jpg|png|svg|js|css|htm|html|mp3|mp4|wav|ogg|avi|ttf|eot|woff|woff2)$ {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    allow all;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    ## Cache images,CSS,JS and webfonts for an hour'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    ## Increasing the duration may improve the load-time, but may cause old files to show after an Matomo upgrade'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    expires 1h;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    add_header Pragma public;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    add_header Cache-Control "public";'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~ ^/(libs|vendor|plugins|misc|node_modules) {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    deny all;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    return 403;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    ## properly display textfiles in root directory'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~/(.*\.md|LEGALNOTICE|LICENSE) {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    default_type text/plain;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    location /dataroot/ {'>> /etc/nginx/conf.d/$FQDN.conf
 echo '      internal;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '      alias '/var/www/html/$FOLDERDATA/';'>> /etc/nginx/conf.d/$FQDN.conf
 echo '    }'>> /etc/nginx/conf.d/$FQDN.conf
-echo '    location ~ [^/].php(/|$) {'>> /etc/nginx/conf.d/$FQDN.conf
+echo '    location ~ ^/(index|matomo|piwik|js/index|plugins/HeatmapSessionRecording/configs)\.php$ {'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        include snippets/fastcgi-php.conf;'>> /etc/nginx/conf.d/$FQDN.conf
+echo '        try_files $fastcgi_script_name =404;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        fastcgi_pass unix:/run/php/php8.3-fpm.sock;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;'>> /etc/nginx/conf.d/$FQDN.conf
 echo '        include fastcgi_params;'>> /etc/nginx/conf.d/$FQDN.conf
