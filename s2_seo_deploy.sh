@@ -1,11 +1,11 @@
 #!/bin/bash
 ####################################################
 #Code UNIX:
-# SEO 5.x = Matoto 5.1.1
-# PHP 8.3
+# SEO 5.x = Matomo version: 5.1.1
+# PHP version: 8.3.10
 # NGINX 1.24, phpmyadmin 5.2.1
-# mysql 10.11.8-mariaDB-0ubuntu0.22.04.1
-# OS ubuntu 22.04 LTS 
+# MySQL version: 10.11.8-MariaDB-0ubuntu0.24.04.1
+# OS ubuntu 24.04.1 LTS 
 # D:\Documents\GitHub\seo\seo-deploy.sh
 # Code Deploy SEO server On-premise:
 # Install SEO on Ubuntu 22.04 linux server OS:
@@ -219,6 +219,8 @@ END
 #Step 8. Configure NGINX
 
 #Next, you will need to create an Nginx virtual host configuration file to host SEO:
+# Mã xoá cấu hình cũ nếu có:
+
 #$ nano /etc/nginx/conf.d/$FQDN.conf
 echo 'server {' >> /etc/nginx/conf.d/$FQDN.conf
 echo '	listen [::]:80; # remove this if you don't want Matomo to be reachable from IPv6'  >> /etc/nginx/conf.d/$FQDN.conf
